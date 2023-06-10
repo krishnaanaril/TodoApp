@@ -1,0 +1,42 @@
+# See http://help.github.com/ignore-files/ for more about ignoring files.
+
+# Compiled output
+/src/todo-frontend/dist
+/src/todo-frontend/tmp
+/src/todo-frontend/out-tsc
+/src/todo-frontend/bazel-out
+
+# Node
+/src/todo-frontend/node_modules
+/src/todo-frontend/npm-debug.log
+/src/todo-frontend/yarn-error.log
+
+# IDEs and editors
+.idea/
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# Visual Studio Code
+/src/todo-frontend/.vscode/*
+/src/todo-frontend/!.vscode/settings.json
+/src/todo-frontend/!.vscode/tasks.json
+/src/todo-frontend/!.vscode/launch.json
+/src/todo-frontend/!.vscode/extensions.json
+/src/todo-frontend/.history/*
+
+# Miscellaneous
+/src/todo-frontend/.angular/cache
+.sass-cache/
+/connect.lock
+/coverage
+/libpeerconnection.log
+testem.log
+/typings
+
+# System files
+.DS_Store
+Thumbs.db
