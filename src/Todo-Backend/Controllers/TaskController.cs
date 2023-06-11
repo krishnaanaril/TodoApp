@@ -6,7 +6,7 @@ namespace Todo_Backend.Controllers;
 
 
 [ApiController]
-[Route("[controller]")]
+[Route("[controller]/[action]")]
 public class TaskController : ControllerBase
 {
     private readonly ITodoTaskService _taskService;
@@ -14,15 +14,15 @@ public class TaskController : ControllerBase
     {
         _taskService = taskService;
     }
-
-    [HttpGet(Name = "GetTasks")]
+    
+    [HttpGet(Name = "GetTasks")]    
     public async Task<IEnumerable<TodoTask>> Get()
     {
         var tasks = await _taskService.GetTasksAsync();
         return tasks;
     }
-
-    [HttpGet(Name = "GetTaskById")]
+    
+    [HttpGet(Name = "GetTaskById")]    
     public async Task<TodoTask?> GetById(int id)
     {
         var tasks = await _taskService.GetTaskById(id);
