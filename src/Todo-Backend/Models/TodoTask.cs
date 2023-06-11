@@ -11,11 +11,14 @@ public class TodoTask
     public string Description {get;set;}
     public TodoTaskStatus Status {get;set;}
     public DateTime CreatedTime {get;set;}
+    public DateTime UpdatedTime {get;set;}
 
     public TodoTask(string description)
     {
+        DateTime currentTime = DateTime.Now;
         Description = description;
         Status = TodoTaskStatus.New;
-        CreatedTime= DateTime.Now;
+        CreatedTime= currentTime;
+        UpdatedTime= currentTime;
     }
 }
