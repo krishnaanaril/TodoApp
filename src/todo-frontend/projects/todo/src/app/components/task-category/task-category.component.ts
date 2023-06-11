@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TodoTask } from '../../models/todo-task';
 
 @Component({
   selector: 'todo-task-category',
@@ -9,5 +10,7 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./task-category.component.css']
 })
 export class TaskCategoryComponent {
+
+  @Input() taskList : TodoTask[] = [];
 
 }
