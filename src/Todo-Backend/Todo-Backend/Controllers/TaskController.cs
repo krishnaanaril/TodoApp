@@ -10,43 +10,104 @@ namespace Todo_Backend.Controllers;
 public class TaskController : ControllerBase
 {
     private readonly ITodoTaskService _taskService;
+    
     public TaskController(ITodoTaskService taskService)
     {
         _taskService = taskService;
     }
-    
-    [HttpGet(Name = "GetTasks")]    
-    public async Task<IEnumerable<TodoTask>> Get()
+
+    [HttpGet(Name = "GetTasks")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<TodoTask>))]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> Get()
     {
-        var tasks = await _taskService.GetTasksAsync();
-        return tasks;
+        try
+        {
+            var tasks = await _taskService.GetTasksAsync();
+            return Ok(tasks);
+        }
+        catch (Exception ex)
+        {
+            // TODO: Log error
+            return Problem(detail: ex.StackTrace, title: ex.Message, statusCode: 500);
+        }
     }
-    
-    [HttpGet(Name = "GetTaskById")]    
-    public async Task<TodoTask?> GetById(int id)
+
+    [HttpGet(Name = "GetTaskById")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(TodoTask))]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> GetById(int id)
     {
-        var tasks = await _taskService.GetTaskById(id);
-        return tasks;
+        try
+        {
+            var tasks = await _taskService.GetTaskById(id);
+            return tasks == null ? NotFound() : Ok(tasks);
+        }
+        catch (Exception ex)
+        {
+            // TODO: Log error
+            return Problem(detail: ex.StackTrace, title: ex.Message, statusCode: 500);
+        }
     }
 
     [HttpPost]
-    public async Task<TodoTask?> AddTask([FromBody]string taskDescription)
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(TodoTask))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> AddTask([FromBody] string taskDescription)
     {
-        var createdTask = await _taskService.AddTask(taskDescription);
-        return createdTask;
+
+        try
+        {
+            if(string.IsNullOrEmpty(taskDescription)){
+                return BadRequest();
+            }
+            var createdTask = await _taskService.AddTask(taskDescription);
+            return Ok(createdTask);
+        }
+        catch (Exception ex)
+        {
+            // TODO: Log error
+            return Problem(detail: ex.StackTrace, title: ex.Message, statusCode: 500);
+        }
     }
 
     [HttpPut]
-    public async Task<TodoTask?> UpdateTask([FromBody]TodoTask todoTask)
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(TodoTask))]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> UpdateTask([FromBody] TodoTask todoTask)
     {
-        var updatedTask = await _taskService.UpdateTask(todoTask.Id, todoTask.Description, todoTask.Status);
-        return updatedTask;
+
+        try
+        {
+            var updatedTask = await _taskService.UpdateTask(todoTask.Id, todoTask.Description, todoTask.Status);
+            return updatedTask == null ? NotFound() :Ok(updatedTask);
+        }
+        catch (Exception ex)
+        {
+            // TODO: Log error
+            return Problem(detail: ex.StackTrace, title: ex.Message, statusCode: 500);
+        }
     }
 
     [HttpDelete]
-    public async Task<TodoTask?> DeleteTask(int id, bool hardDelete = false)
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(TodoTask))]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> DeleteTask(int id, bool hardDelete = false)
     {
-        var deletedTask = await _taskService.DeleteTask(id, hardDelete);
-        return deletedTask;
+
+        try
+        {
+            var deletedTask = await _taskService.DeleteTask(id, hardDelete);
+            return deletedTask == null ? NotFound() : Ok(deletedTask);
+        }
+        catch (Exception ex)
+        {
+            // TODO: Log error
+            return Problem(detail: ex.StackTrace, title: ex.Message, statusCode: 500);
+        }
     }
 }
