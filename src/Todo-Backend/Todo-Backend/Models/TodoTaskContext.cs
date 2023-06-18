@@ -10,7 +10,7 @@ public class TodoTaskContext : DbContext
 
     public TodoTaskContext()
     {        
-        var path = @"E:\KrishnaMohan\Workspace\TodoApp\src\Todo-Backend\Database";
+        var path = @"E:\KrishnaMohan\Workspace\TodoApp\src\Todo-Backend\Todo-Backend\Database";
         DbPath = System.IO.Path.Join(path, "tasks.db");
     }
 

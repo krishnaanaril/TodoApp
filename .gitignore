@@ -42,5 +42,9 @@ testem.log
 Thumbs.db
 
 # Backedn
-/src/Todo-Backend/obj
-/src/Todo-Backend/bin
+/src/Todo-Backend/Todo-Backend/obj
+/src/Todo-Backend/Todo-Backend/bin
+/src/Todo-Backend/Todo-Backend.Tests/obj
+/src/Todo-Backend/Todo-Backend.Tests/bin
+src/Todo-Backend/Todo-Backend/Database/tasks.db-shm
+src/Todo-Backend/Todo-Backend/Database/tasks.db-wal

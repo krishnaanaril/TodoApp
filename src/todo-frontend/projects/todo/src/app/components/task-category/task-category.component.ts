@@ -13,4 +13,8 @@ export class TaskCategoryComponent {
 
   @Input() taskList : TodoTask[] = [];
 
+  taskTrackBy(index: number, task: TodoTask) {
+    return task.id;
+  }
+
 }
