@@ -1,5 +1,5 @@
 <div class="w-full min-h-[80vh] min-w-[25vw] border border-solid border-slate-300 rounded">
-    <div class="m-2 bg-red-300 border border-solid border-green-200" *ngFor="let item of taskList">
+    <div class="m-2 bg-red-300 border border-solid border-green-200" *ngFor="let item of taskList; trackBy: taskTrackBy">
         <p>
             {{item.description}}
         </p>
