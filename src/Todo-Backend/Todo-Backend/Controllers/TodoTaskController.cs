@@ -7,11 +7,11 @@ namespace Todo_Backend.Controllers;
 
 [ApiController]
 [Route("[controller]/[action]")]
-public class TaskController : ControllerBase
+public class TodoTaskController : ControllerBase
 {
     private readonly ITodoTaskService _taskService;
     
-    public TaskController(ITodoTaskService taskService)
+    public TodoTaskController(ITodoTaskService taskService)
     {
         _taskService = taskService;
     }
@@ -19,7 +19,7 @@ public class TaskController : ControllerBase
     [HttpGet(Name = "GetTasks")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<TodoTask>))]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> Get()
+    public async Task<ActionResult<IList<TodoTask>>> Get()
     {
         try
         {

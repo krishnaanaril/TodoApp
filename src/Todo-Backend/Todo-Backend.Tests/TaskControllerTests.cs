@@ -42,22 +42,33 @@ public class TaskControllerTests
     {
         // Arrange
         taskService.Setup(service => service.GetTasksAsync()).Returns(Task.FromResult(mockTaskList));
-        TaskController taskController = new TaskController(taskService.Object);
+        TodoTaskController taskController = new(taskService.Object);
 
         // Act
-        var result = await taskController.Get() ;
+        var actionResult = await taskController.Get() ;
+        var result = actionResult.Result as OkObjectResult;
+        var resultValue = result!.Value as IList<TodoTask>;
 
         // Assert
-        Assert.That((result as OkObjectResult).StatusCode, Is.EqualTo(StatusCodes.Status200OK));
+        Assert.Multiple(()=>
+        {
+            Assert.That(result.Value, Is.Not.Null);            
+            Assert.That(resultValue, Has.Count.EqualTo(2));
+            Assert.That(result!.StatusCode, Is.EqualTo(StatusCodes.Status200OK));
+        });
     }
 
     [Test]
     public async Task Get_AllTask_ReturnsException()
     {
         taskService.Setup(service => service.GetTasksAsync()).ThrowsAsync(new Exception("Some message here"));
-        TaskController taskController = new TaskController(taskService.Object);
-        // var ex = Assert.Throws<Exception>(async () => await taskController.Get() );
-        // Assert.That(ex.Message, Is.EqualTo("Some message here"));
-        Assert.ThrowsAsync<Exception>(async () => await taskController.Get());
+        TodoTaskController taskController = new(taskService.Object);
+        
+        // Act
+        var actionResult = await taskController.Get() ;        
+        var result = actionResult.Result as ObjectResult;
+
+        // Assert
+        Assert.That(result!.StatusCode, Is.EqualTo(StatusCodes.Status500InternalServerError));
     }
 }
