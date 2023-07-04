@@ -20,6 +20,8 @@ export class MainComponent implements OnInit {
 
   taskCount: number = 0;
   taskDescription: string | null = null;
+  selectedTask: TodoTask | null = null;
+  todoTaskStatus = TodoTaskStatus;
 
   dataService: DataService = inject(DataService);
 
@@ -46,7 +48,7 @@ export class MainComponent implements OnInit {
       next: (res: TodoTask) => {
         this.getTaskList();
       },
-      error: error => console.error(error),      
+      error: error => console.error(error),
     });
   }
 
@@ -55,16 +57,36 @@ export class MainComponent implements OnInit {
       next: (res: TodoTask) => {
         this.getTaskList();
       },
-      error: error => console.error(error),      
+      error: error => console.error(error),
     });
+  }
+
+  onSelectedTaskChange(task: TodoTask) {
+    this.selectedTask = task;
   }
 
   getTaskList() {
     this.dataService.getTasks().subscribe((tasks: TodoTask[]) => {
-      this.newTasks = tasks.filter(task => task.status === TodoTaskStatus.New);
-      this.inProgressTasks = tasks.filter(task => task.status === TodoTaskStatus.InProgress);
-      this.completedTasks = tasks.filter(task => task.status === TodoTaskStatus.Completed);
+      this.mapTasks(tasks);
+      this.updateSelectedTask(tasks);
     });
+  }
+
+  mapTasks(tasks: TodoTask[]) {
+    this.newTasks = tasks.filter(task => task.status === TodoTaskStatus.New);
+    this.inProgressTasks = tasks.filter(task => task.status === TodoTaskStatus.InProgress);
+    this.completedTasks = tasks.filter(task => task.status === TodoTaskStatus.Completed);
+  }
+
+  updateSelectedTask(tasks: TodoTask[]) {
+    if (this.selectedTask) {
+      this.selectedTask = tasks.find(task => task.id == this.selectedTask!.id) ?? null;
+    }
+  }
+
+  updateTaskStatus(taskStatus: TodoTaskStatus) {
+    let taskToBeUpdated: TodoTask = { ...this.selectedTask!, status: taskStatus };
+    this.onUpdate(taskToBeUpdated);
   }
 
 }

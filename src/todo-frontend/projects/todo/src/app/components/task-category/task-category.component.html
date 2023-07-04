@@ -1,11 +1,22 @@
 <div class="w-full min-h-[80vh] min-w-[25vw] border border-solid border-slate-300 rounded">
-    <div class="m-2 bg-red-300 border border-solid border-green-200" *ngFor="let item of taskList; trackBy: taskTrackBy">
-        <p>
-            {{item.description}}
-        </p>
-        <div class="flex justify-end">
-            <button class="p-2" type="button">Edit</button>
-            <button class="p-2" type="button" (click)="deleteTask(item.id)">Delete</button>
+    <div class="m-2 bg-red-300 border border-solid border-green-200" 
+    *ngFor="let item of taskList; trackBy: taskTrackBy"
+    (click)="changeSelectedTask(item.id)">
+        <div *ngIf="editMode==true && selectedTaskId==item.id; else nonEdit">
+            <textarea class="w-full text-slate-800" [(ngModel)]="taskDescription"></textarea>
+            <div class="flex justify-end">
+                <button class="p-2" type="button" (click)="updateTask(item.id)">Save</button>
+                <button class="p-2" type="button" (click)="cancelEdit(item.id)">Cancel</button>
+            </div>
         </div>
+        <ng-template #nonEdit>
+            <p>
+                {{item.description}}
+            </p>
+            <div class="flex justify-end">
+                <button class="p-2" type="button" (click)="editTask(item.id, item.description)">Edit</button>
+                <button class="p-2" type="button" (click)="deleteTask(item.id)">Delete</button>
+            </div>
+        </ng-template>
     </div>
 </div>
