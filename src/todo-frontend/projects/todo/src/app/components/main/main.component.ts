@@ -24,24 +24,47 @@ export class MainComponent implements OnInit {
   dataService: DataService = inject(DataService);
 
   ngOnInit(): void {
+    this.getTaskList();
+  }
+
+  onSubmit(taskForm: any) {
+    if (this.taskDescription && this.taskDescription.trim() != "") {
+      this.dataService.addTask(this.taskDescription).subscribe({
+        next: (res: TodoTask) => {
+          this.newTasks.push(res);
+        },
+        error: error => console.error(error),
+        complete: () => {
+          taskForm.form.reset();
+        }
+      });
+    }
+  }
+
+  onDelete(taskId: number) {
+    this.dataService.deleteTask(taskId).subscribe({
+      next: (res: TodoTask) => {
+        this.getTaskList();
+      },
+      error: error => console.error(error),      
+    });
+  }
+
+  onUpdate(updatedTask: TodoTask) {
+    this.dataService.updateTask(updatedTask).subscribe({
+      next: (res: TodoTask) => {
+        this.getTaskList();
+      },
+      error: error => console.error(error),      
+    });
+  }
+
+  getTaskList() {
     this.dataService.getTasks().subscribe((tasks: TodoTask[]) => {
       this.newTasks = tasks.filter(task => task.status === TodoTaskStatus.New);
       this.inProgressTasks = tasks.filter(task => task.status === TodoTaskStatus.InProgress);
       this.completedTasks = tasks.filter(task => task.status === TodoTaskStatus.Completed);
     });
-  }
-
-  onSubmit(taskForm: any){   
-    const currentTime: Date = new Date();
-    const newTask: TodoTask = {
-      id: ++this.taskCount,
-      description: this.taskDescription ?? "",
-      status: TodoTaskStatus.New,
-      createdTime: currentTime,
-      updatedTime: currentTime
-    };
-    this.newTasks.push(newTask);
-    taskForm.form.reset();    
   }
 
 }

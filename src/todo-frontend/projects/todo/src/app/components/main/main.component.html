@@ -8,7 +8,7 @@
     <div class="w-full flex flex-row justify-between">
         <div>
             <h2>New</h2>
-            <todo-task-category [taskList]="newTasks"></todo-task-category>
+            <todo-task-category [taskList]="newTasks" (onDelete)="onDelete($event)"></todo-task-category>
         </div>
         <div class="w-min flex flex-col justify-center">
             <button class="w-10 h-10 my-2 bg-blue-500 hover:bg-blue-700 font-bold rounded" type="button">
@@ -20,7 +20,7 @@
         </div>
         <div>
             <h2>In Progress</h2>
-            <todo-task-category [taskList]="inProgressTasks"></todo-task-category>
+            <todo-task-category [taskList]="inProgressTasks" (onDelete)="onDelete($event)"></todo-task-category>
         </div>
         <div class="w-min flex flex-col justify-center">
             <button class="w-10 h-10 my-2 bg-blue-500 hover:bg-blue-700 font-bold rounded" type="button">
@@ -32,7 +32,7 @@
         </div>
         <div>
             <h2>Completed</h2>
-            <todo-task-category [taskList]="completedTasks"></todo-task-category>
+            <todo-task-category [taskList]="completedTasks" (onDelete)="onDelete($event)"></todo-task-category>
         </div>
     </div>
 </div>
