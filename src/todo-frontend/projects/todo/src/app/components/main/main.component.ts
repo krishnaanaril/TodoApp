@@ -20,28 +20,73 @@ export class MainComponent implements OnInit {
 
   taskCount: number = 0;
   taskDescription: string | null = null;
+  selectedTask: TodoTask | null = null;
+  todoTaskStatus = TodoTaskStatus;
 
   dataService: DataService = inject(DataService);
 
   ngOnInit(): void {
-    this.dataService.getTasks().subscribe((tasks: TodoTask[]) => {
-      this.newTasks = tasks.filter(task => task.status === TodoTaskStatus.New);
-      this.inProgressTasks = tasks.filter(task => task.status === TodoTaskStatus.InProgress);
-      this.completedTasks = tasks.filter(task => task.status === TodoTaskStatus.Completed);
+    this.getTaskList();
+  }
+
+  onSubmit(taskForm: any) {
+    if (this.taskDescription && this.taskDescription.trim() != "") {
+      this.dataService.addTask(this.taskDescription).subscribe({
+        next: (res: TodoTask) => {
+          this.newTasks.push(res);
+        },
+        error: error => console.error(error),
+        complete: () => {
+          taskForm.form.reset();
+        }
+      });
+    }
+  }
+
+  onDelete(taskId: number) {
+    this.dataService.deleteTask(taskId).subscribe({
+      next: (res: TodoTask) => {
+        this.getTaskList();
+      },
+      error: error => console.error(error),
     });
   }
 
-  onSubmit(taskForm: any){   
-    const currentTime: Date = new Date();
-    const newTask: TodoTask = {
-      id: ++this.taskCount,
-      description: this.taskDescription ?? "",
-      status: TodoTaskStatus.New,
-      createdTime: currentTime,
-      updatedTime: currentTime
-    };
-    this.newTasks.push(newTask);
-    taskForm.form.reset();    
+  onUpdate(updatedTask: TodoTask) {
+    this.dataService.updateTask(updatedTask).subscribe({
+      next: (res: TodoTask) => {
+        this.getTaskList();
+      },
+      error: error => console.error(error),
+    });
+  }
+
+  onSelectedTaskChange(task: TodoTask) {
+    this.selectedTask = task;
+  }
+
+  getTaskList() {
+    this.dataService.getTasks().subscribe((tasks: TodoTask[]) => {
+      this.mapTasks(tasks);
+      this.updateSelectedTask(tasks);
+    });
+  }
+
+  mapTasks(tasks: TodoTask[]) {
+    this.newTasks = tasks.filter(task => task.status === TodoTaskStatus.New);
+    this.inProgressTasks = tasks.filter(task => task.status === TodoTaskStatus.InProgress);
+    this.completedTasks = tasks.filter(task => task.status === TodoTaskStatus.Completed);
+  }
+
+  updateSelectedTask(tasks: TodoTask[]) {
+    if (this.selectedTask) {
+      this.selectedTask = tasks.find(task => task.id == this.selectedTask!.id) ?? null;
+    }
+  }
+
+  updateTaskStatus(taskStatus: TodoTaskStatus) {
+    let taskToBeUpdated: TodoTask = { ...this.selectedTask!, status: taskStatus };
+    this.onUpdate(taskToBeUpdated);
   }
 
 }
